@@ -25,7 +25,7 @@ spack debug report
 # do..). When we spack env activate, the same constraint applies.
 # Use spack load instead of an environment activation as it should limit the
 # inode produced by the environment's view.
-# eval -- "$(spack env activate --prompt --sh gyselalibxx-spack-environment)"
+# eval -- "$(spack env activate --prompt --sh kevin-gyselalibxx-spack-environment)"
 # unalias despacktivate
 # unset despacktivate
 # function despacktivate() {
@@ -33,11 +33,11 @@ spack debug report
 # }
 
 # Problematic on Adastra, git repositories are shared between users.
-# spack --env gyselalibxx-spack-environment repo update
+# spack --env kevin-gyselalibxx-spack-environment repo update
 
 eval -- "$(
     spack \
-        --env gyselalibxx-spack-environment \
+        --env kevin-gyselalibxx-spack-environment \
         load --sh \
         cmake \
         ddc \

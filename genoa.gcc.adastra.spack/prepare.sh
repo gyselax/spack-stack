@@ -28,10 +28,10 @@ spack debug report
 
 cp "${TOOLCHAIN_ROOT_DIRECTORY}/packages.yaml" "${SPACK_USER_CONFIG_PATH}"
 
-spack env remove --yes-to-all gyselalibxx-spack-environment
-spack env create gyselalibxx-spack-environment "${TOOLCHAIN_ROOT_DIRECTORY}/gyselalibxx-spack-environment.yaml"
+spack env remove --yes-to-all kevin-gyselalibxx-spack-environment
+spack env create kevin-gyselalibxx-spack-environment "${TOOLCHAIN_ROOT_DIRECTORY}/gyselalibxx-spack-environment.yaml"
 
 echo "Preparing the Spack environment..."
 
-spack --env gyselalibxx-spack-environment concretize --force
-spack --env gyselalibxx-spack-environment install --concurrent-packages 4 --jobs 32
+spack --env kevin-gyselalibxx-spack-environment concretize --force
+spack --env kevin-gyselalibxx-spack-environment install --concurrent-packages 4 --jobs 32
