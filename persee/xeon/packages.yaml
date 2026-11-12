@@ -1,9 +1,5 @@
 ---
 packages:
-  cuda:
-    externals:
-    - spec: cuda@12.9.86
-      prefix: /usr/local/cuda
   gcc:
     externals:
     - spec: gcc@13.2.0 languages:='c,c++,fortran'

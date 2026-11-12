@@ -2,7 +2,6 @@
 packages:
   cray-mpich:
     buildable: false
-    version: [8.1.30]
     externals:
       - spec: cray-mpich@8.1.30 %gcc@13.3
         prefix: /opt/cray/pe/mpich/8.1.30/ofi/gnu/11.2
