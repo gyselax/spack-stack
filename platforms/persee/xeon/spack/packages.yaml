@@ -1,0 +1,25 @@
+---
+packages:
+  all:
+    permissions:
+      read: group
+      write: group
+    prefer:
+      - '~fortran ~mpi +openmp'
+      - 'target=cascadelake'
+  c:
+    require: gcc@13.2.0
+  cxx:
+    require: gcc@13.2.0
+  ginkgo:
+    require: '+openmp'
+  kokkos:
+    require: '+openmp'
+  kokkos-fft:
+    require: 'host_backend=fftw-openmp'
+  kokkos-kernels:
+    require: '~shared'
+  lapack:
+    require: openblas@0.3
+  mpi:
+    require: openmpi@5.0
