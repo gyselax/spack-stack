@@ -13,7 +13,6 @@ spack:
     - googletest@1.17 +gmock
     - kokkos@5.1
     - kokkos-kernels@5.1
-    - kokkos-tools@5.2
     - koliop@1.1
     - lapack
     - mpi
@@ -21,36 +20,24 @@ spack:
     - paraconf@1.0
     - pdi@1.11
     - pdiplugin-decl-hdf5@1.11 +mpi
-    - pdiplugin-decl-netcdf@1.11 +mpi
     - pdiplugin-mpi@1.11
-    - pdiplugin-pycall@1.11
     - pdiplugin-set-value@1.11
-    - pdiplugin-trace@1.11
     - python@3.14
 
-    - py-dask@2026.3
-    - py-gvec@1.4
     - py-h5py@3.16
     - py-imageio@2.37
     - py-matplotlib@3.11
-    - py-netcdf4@1.7 +mpi
     - py-numpy@2.4
     - py-pyyaml@6.0
     - py-scipy@1.17
     - py-sympy@1.14
     - py-xarray@2026.4
+
+    - kokkos-tools@5.2
   concretizer:
     reuse: false
     unify: true
   packages:
-    arrow:
-      prefer:
-        - '~mimalloc'
-    hdf5:
-      require: '+subfiling'
-    py-dask:
-      prefer:
-        - '~dataframe'
     py-pandas:
       prefer:
         - '~performance'

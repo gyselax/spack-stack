@@ -7,7 +7,7 @@ spack:
   specs:
     - cxx
     - cmake@3.31
-    - ddc +pdi
+    - ddc@0.15 +pdi
     - gyselalibxx@0.8
     - mpi
     - paraconf@1.0
@@ -42,12 +42,14 @@ spack:
       prefer:
         - '~mimalloc'
     hdf5:
-      require: '+subfiling'
+      require:
+        - '+subfiling'
     py-dask:
       prefer:
         - '~dataframe'
     py-h5py:
-      require: '+mpi'
+      require:
+        - '+mpi'
     py-pandas:
       prefer:
         - '~performance'
