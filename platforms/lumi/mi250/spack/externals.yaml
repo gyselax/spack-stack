@@ -32,6 +32,36 @@ packages:
             c: /opt/cray/pe/gcc-native/14/bin/gcc
             cxx: /opt/cray/pe/gcc-native/14/bin/g++
             fortran: /opt/cray/pe/gcc-native/14/bin/gfortran
+  rocm-cmake:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocm-cmake@6.4.3
+  hipblas-common:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipblas-common@6.4.3
+  hipblaslt:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipblaslt@6.4.3
+  rocm-smi-lib:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocm-smi-lib@6.4.3
+  rocm-core:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocm-core@6.4.3
+  rocprofiler-register:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocprofiler-register@6.4.3
   hip:
     buildable: false
     externals:

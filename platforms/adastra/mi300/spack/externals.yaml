@@ -22,6 +22,41 @@ packages:
             c: /opt/rh/gcc-toolset-13/root/usr/bin/gcc
             cxx: /opt/rh/gcc-toolset-13/root/usr/bin/g++
             fortran: /opt/rh/gcc-toolset-13/root/usr/bin/gfortran
+  comgr:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: comgr@6.3.3
+  rocm-cmake:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocm-cmake@6.3.3
+  hipblas-common:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: hipblas-common@6.3.3
+  hipblaslt:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: hipblaslt@6.3.3
+  rocm-smi-lib:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocm-smi-lib@6.3.3
+  rocm-core:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocm-core@6.3.3
+  rocprofiler-register:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocprofiler-register@6.3.3
   hip:
     buildable: false
     externals:
