@@ -10,7 +10,7 @@ fi
 # `module` may be missing in non-interactive shells (e.g. under srun)
 if command -v module >/dev/null 2>&1; then module purge; fi
 
-export GYSELA_SPACK_GROUP="${PROJECT}"
+export GYSELA_SPACK_GROUP="gen2224"
 export GYSELA_SPACK_JOBS=96
 GYSELA_SPACK_VERSION="$(tr -d '[:space:]' < "$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")/../../spack-version.txt")"
 export GYSELA_SPACK_VERSION

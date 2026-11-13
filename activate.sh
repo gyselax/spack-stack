@@ -108,7 +108,7 @@ _gys_activate() {
     if [ -n "${SPACK_ENV:-}" ]; then
         spack env deactivate || return 1
     fi
-    spack env activate "${env_name}" || return 1
+    spack env activate --prompt "${env_name}" || return 1
 
     # Add Kokkos Tools to the `LD_LIBRARY_PATH` when the environment provides it
     # (lib64 on RHEL-like systems, lib on Debian-like ones)
