@@ -7,6 +7,9 @@ then
     exit 1
 fi
 
+# `module` may be missing in non-interactive shells (e.g. under srun)
+if command -v module >/dev/null 2>&1; then module purge; fi
+
 : "${GYSELA_SPACK_BASE:=/data/gyselarunner}"
 
 export GYSELA_SPACK_GROUP="gysela"
@@ -16,7 +19,3 @@ export GYSELA_SPACK_VERSION
 export GYSELA_SPACK_PREFIX="${GYSELA_SPACK_BASE}/gysela-spack-${GYSELA_SPACK_VERSION}"
 
 export SPACK_DISABLE_LOCAL_CONFIG=true
-
-if [ -f "${GYSELA_SPACK_PREFIX}/share/spack/setup-env.sh" ]; then
-    . "${GYSELA_SPACK_PREFIX}/share/spack/setup-env.sh"
-fi

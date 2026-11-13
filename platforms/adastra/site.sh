@@ -18,7 +18,3 @@ export GYSELA_SPACK_PREFIX=${ALL_CCFRSCRATCH}/gysela-spack-${GYSELA_SPACK_VERSIO
 
 export PYTHONPYCACHEPREFIX="${ALL_CCFRSCRATCH}/pycache"
 export SPACK_DISABLE_LOCAL_CONFIG=true
-
-if [ -f "${GYSELA_SPACK_PREFIX}/share/spack/setup-env.sh" ]; then
-    . "${GYSELA_SPACK_PREFIX}"/share/spack/setup-env.sh
-fi

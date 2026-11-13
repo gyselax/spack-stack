@@ -8,7 +8,8 @@
 #   projects/<project>/spack.yaml          (what to install)
 #   platforms/<site>/site.sh             (site variables, Spack location)
 #   platforms/<site>/<arch>/spack/*.yaml   (externals, packages, repos)
-# into the Spack environment "<project>-<arch>--<version>" (version.txt).
+# into a Spack environment named after environment-name.txt, by default
+# "<project>-<arch>--<version>" (version.txt). Activate it with activate.sh.
 #
 # Steps (run in this order by default, `--step` runs only one):
 #   spack        clone Spack and bootstrap it                 (needs internet)
@@ -99,7 +100,7 @@ done
 [[ -f "${conf_dir}/repos.yaml" ]] || warn "no repos.yaml for ${platform}/${arch}: Spack's default builtin repository will be used"
 
 # ------------------------------------------------------------- site config
-# Spack's setup-env.sh (sourced by site.sh) is not `set -u` clean.
+# site.sh reads site variables that may be unset (e.g. PROJECT): not `set -u` clean.
 set +u
 # shellcheck disable=SC1091
 . "${platform_dir}/site.sh"
@@ -111,7 +112,11 @@ set -u
 : "${GYSELA_SPACK_PREFIX:?not set by ${platform}/site.sh}"
 
 version="$(tr -d '[:space:]' < "${TOOLCHAIN_ROOT}/version.txt")"
-env_name="${project}-${arch}--${version}"
+# The naming rule lives in environment-name.txt only (activate.sh reads it too)
+env_name="$(tr -d '[:space:]' < "${TOOLCHAIN_ROOT}/environment-name.txt")"
+env_name="${env_name//\{project\}/${project}}"
+env_name="${env_name//\{arch\}/${arch}}"
+env_name="${env_name//\{version\}/${version}}"
 
 use_slurm="${slurm_override:-${GYSELA_USE_SLURM:-0}}"
 if [[ "${use_slurm}" == 1 && -z "${GYSELA_INSTALL_WORKER:-}" ]]; then
@@ -265,3 +270,4 @@ for s in "${steps[@]}"; do
     run_step "${s}"
 done
 info "Done: ${env_name}"
+info "Activate it with: . ${TOOLCHAIN_ROOT}/activate.sh --platform ${platform} --arch ${arch} --project ${project}"

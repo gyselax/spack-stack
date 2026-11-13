@@ -23,7 +23,3 @@ export GYSELA_SPACK_PREFIX="${GYSELA_SPACK_BASE}/gysela-spack-${GYSELA_SPACK_VER
 export GYSELA_DETECT_EXTERNALS="gcc"
 
 export SPACK_DISABLE_LOCAL_CONFIG=true
-
-if [ -f "${GYSELA_SPACK_PREFIX}/share/spack/setup-env.sh" ]; then
-    . "${GYSELA_SPACK_PREFIX}"/share/spack/setup-env.sh
-fi

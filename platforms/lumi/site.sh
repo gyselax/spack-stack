@@ -18,7 +18,3 @@ export GYSELA_SPACK_PREFIX=/scratch/project_465002992/gysela-spack-${GYSELA_SPAC
 
 export PYTHONPYCACHEPREFIX="/flash/project_465002992/pycache"
 export SPACK_DISABLE_LOCAL_CONFIG=true
-
-if [ -f "${GYSELA_SPACK_PREFIX}/share/spack/setup-env.sh" ]; then
-    . "${GYSELA_SPACK_PREFIX}"/share/spack/setup-env.sh
-fi
