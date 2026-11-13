@@ -14,24 +14,19 @@ spack:
     - pdi@1.11
 
     - py-dask
-    - py-dask-ml@2025.1
-    - py-deisa-dask@0.6 +mpi
+    - py-deisa-dask +mpi
     - py-deisa-ray
-    - py-equinox@0.13
-    - py-h5netcdf
+    - py-distributed
+    - py-equinox
     - py-h5py +mpi
-    - py-imageio
     - py-iops-benchmark +bayesian
-    - py-jax@0.4
+    - py-jax
     - py-matplotlib
+    - py-mpi4py
     - py-numpy
-    - py-netcdf4 +mpi
-    - py-optax@0.2
     - py-pyyaml
     - py-scikit-learn
     - py-scimba
-    - py-scipy
-    - py-sympy
     - py-tqdm
     - py-xarray
   concretizer:
@@ -50,6 +45,9 @@ spack:
     py-h5py:
       require:
         - '+mpi'
+    py-jaxlib:
+      require:
+        - '%llvm'
     py-pandas:
       prefer:
         - '~performance'
@@ -57,7 +55,8 @@ spack:
       prefer:
         - '~valgrind'
     npm:
-      require: '@10.9.8'
+      require:
+        - '@10.9.8'
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
