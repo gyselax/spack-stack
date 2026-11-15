@@ -28,7 +28,7 @@ spack:
     - python@3.14
 
     - py-dask@2026.3 +distributed
-    - py-gysmc@git.f62d25275b7695c78f95d7aca51cbe679a1ef8b1
+    - py-gysmc@git.f62d25275b7695c78f95d7aca51cbe679a1ef8b1=main
     - py-h5py@3.16
     - py-imageio@2.37
     - py-matplotlib@3.11
