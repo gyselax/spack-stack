@@ -5,9 +5,9 @@
 #   ./install.sh --platform <site> --arch <arch> --project <project> [options]
 #
 # It combines
-#   projects/<project>/spack.yaml          (what to install)
-#   platforms/<site>/site.sh             (site variables, Spack location)
-#   platforms/<site>/<arch>/spack/*.yaml   (externals, packages, repos)
+#   projects/<project>/spack.yaml          (what to install, package repositories)
+#   platforms/<site>/site.sh               (site variables, Spack location)
+#   platforms/<site>/<arch>/spack/*.yaml   (externals, packages)
 # into a Spack environment named after environment-name.txt, by default
 # "<project>-<arch>-<version>" (version.txt). Activate it with activate.sh.
 #
@@ -97,7 +97,10 @@ project_yaml="${TOOLCHAIN_ROOT}/projects/${project}/spack.yaml"
 for f in externals.yaml packages.yaml; do
     [[ -f "${conf_dir}/${f}" ]] || die "missing ${conf_dir}/${f}"
 done
-[[ -f "${conf_dir}/repos.yaml" ]] || warn "no repos.yaml for ${platform}/${arch}: Spack's default builtin repository will be used"
+# Package repositories are normally declared by the project (a platform may add a repos.yaml)
+if [[ ! -f "${conf_dir}/repos.yaml" ]] && ! grep -q '^[[:space:]]*repos:' "${project_yaml}"; then
+    warn "no package repositories in projects/${project}/spack.yaml nor ${platform}/${arch}: Spack's default builtin repository will be used"
+fi
 
 # ------------------------------------------------------------- site config
 # site.sh reads site variables that may be unset (e.g. PROJECT): not `set -u` clean.
