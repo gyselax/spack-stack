@@ -19,6 +19,9 @@ export GYSELA_SPACK_PREFIX=${ALL_CCFRSCRATCH}/gysela-spack-${GYSELA_SPACK_VERSIO
 export PYTHONPYCACHEPREFIX="${ALL_CCFRSCRATCH}/pycache"
 export SPACK_DISABLE_LOCAL_CONFIG=true
 
+if [[ -n "${JOBSCRATCH:-}" && -d "$JOBSCRATCH" ]]; then
+    export TMPDIR="$JOBSCRATCH"
+fi
 
 # Build on GPU compute nodes (no internet there: sources are mirrored from the login node)
 export GYSELA_USE_SLURM=1
