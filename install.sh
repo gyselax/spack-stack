@@ -16,6 +16,7 @@
 #   env          (re)create the environment, update repos, detect system packages (needs internet)
 #   concretize   concretize the environment
 #   mirror       download all sources to a local mirror       (Slurm mode only)
+#   crates       download the Rust crates for offline builds  (Slurm mode only)
 #   install      build and install
 # In Slurm mode (GYSELA_USE_SLURM=1 in site.sh, or --slurm), `concretize` and
 # `install` run on a compute node through srun, the others on the login node.
@@ -53,7 +54,7 @@ Options:
   --platform <site>        one of: $(list_dirs "${TOOLCHAIN_ROOT}/platforms" site.sh)
   --arch <arch>            a sub-directory of platforms/<site>/ (e.g. mi250, h100)
   --project <project>      one of: $(list_dirs "${TOOLCHAIN_ROOT}/projects" spack.yaml)
-  --step <step>            all (default) | spack | env | concretize | mirror | install
+  --step <step>            all (default) | spack | env | concretize | mirror | crates | install
   --slurm-account <acct>   Slurm account (or set GYSELA_SLURM_ACCOUNT)
   --slurm / --no-slurm     force or disable Slurm mode (default: GYSELA_USE_SLURM from site.sh)
   -h, --help               show this help
@@ -82,7 +83,7 @@ done
 [[ -n "${platform}" && -n "${arch}" && -n "${project}" ]] \
     || { usage >&2; die "--platform, --arch and --project are required"; }
 case "${step}" in
-    all|spack|env|concretize|mirror|install) ;;
+    all|spack|env|concretize|mirror|crates|install) ;;
     *) die "invalid --step '${step}'" ;;
 esac
 
@@ -133,6 +134,7 @@ if [[ "${use_slurm}" == 1 && -z "${GYSELA_INSTALL_WORKER:-}" ]]; then
 fi
 
 mirror_dir="${GYSELA_SPACK_PREFIX}/var/spack/mirror"
+cargo_vendor_dir="${GYSELA_SPACK_PREFIX}/var/spack/cargo-vendor"
 
 # ------------------------------------------------------------------- steps
 load_spack() {
@@ -199,8 +201,36 @@ step_mirror() {
     spack -e "${env_name}" mirror add local_filesystem "${mirror_dir}"
 }
 
+step_crates() {
+    load_spack
+    info "Downloading Rust crates into ${cargo_vendor_dir}"
+    "${TOOLCHAIN_ROOT}/vendor-crates.sh" "${env_name}" "${cargo_vendor_dir}"
+}
+
+# Make cargo use the crates of the `crates` step instead of crates.io.
+# Cargo reads .cargo/config.toml from every parent of its build directory,
+# and Spack builds each package below its stage root (which it leaves alone).
+use_vendored_crates() {
+    local stage_root
+    stage_root="$(spack -e "${env_name}" location --stages)"
+    info "Using the Rust crates of ${cargo_vendor_dir} (${stage_root}/.cargo/config.toml)"
+    mkdir --parents "${stage_root}/.cargo"
+    cat > "${stage_root}/.cargo/config.toml" <<EOF
+# Written by install.sh: use the crates downloaded on the login node
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "${cargo_vendor_dir}"
+EOF
+}
+
 step_install() {
     load_spack
+    # On an air-gapped compute node, build Rust packages from the downloaded crates
+    if [[ -n "${GYSELA_INSTALL_WORKER:-}" && -n "$(ls -A "${cargo_vendor_dir}" 2>/dev/null)" ]]; then
+        use_vendored_crates
+    fi
     spack -e "${env_name}" install --jobs "${SLURM_CPUS_PER_TASK:-${GYSELA_SPACK_JOBS}}"
 }
 
@@ -264,7 +294,7 @@ trap 'echo "error: failed (environment ${env_name}, line ${LINENO})" >&2' ERR
 
 if [[ "${step}" == all ]]; then
     steps=(spack env concretize)
-    [[ "${use_slurm}" == 1 ]] && steps+=(mirror)
+    [[ "${use_slurm}" == 1 ]] && steps+=(mirror crates)
     steps+=(install)
 else
     steps=("${step}")
