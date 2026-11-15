@@ -67,11 +67,6 @@ packages:
     externals:
       - spec: hip@6.4.3
         prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-        extra_attributes:
-          compilers:
-            c:   /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang
-            cxx: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
-            hip: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/bin/hipcc
   hipfft:
     buildable: false
     externals:
@@ -87,10 +82,6 @@ packages:
     externals:
       - spec: hsa-rocr-dev@6.4.3
         prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-        extra_attributes:
-          compilers:
-            c: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang
-            cxx: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
   llvm-amdgpu:
     buildable: false
     externals:

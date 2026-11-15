@@ -60,12 +60,7 @@ packages:
   hip:
     buildable: false
     externals:
-      - extra_attributes:
-          compilers:
-            c: /opt/rocm-6.3.3/llvm/bin/clang
-            cxx: /opt/rocm-6.3.3/llvm/bin/clang++
-            hip: /opt/rocm-6.3.3/bin/hipcc
-        prefix: /opt/rocm-6.3.3
+      - prefix: /opt/rocm-6.3.3
         spec: hip@6.3.3
   hipblas:
     buildable: false
@@ -112,10 +107,6 @@ packages:
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: hsa-rocr-dev@6.3.3
-        extra_attributes:
-          compilers:
-            c: /opt/rocm-6.3.3/llvm/bin/clang
-            cxx: /opt/rocm-6.3.3/llvm/bin/clang++
   hsakmt-roct:
     buildable: false
     externals:
