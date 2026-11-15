@@ -9,7 +9,7 @@
 #   platforms/<site>/site.sh             (site variables, Spack location)
 #   platforms/<site>/<arch>/spack/*.yaml   (externals, packages, repos)
 # into a Spack environment named after environment-name.txt, by default
-# "<project>-<arch>--<version>" (version.txt). Activate it with activate.sh.
+# "<project>-<arch>-<version>" (version.txt). Activate it with activate.sh.
 #
 # Steps (run in this order by default, `--step` runs only one):
 #   spack        clone Spack and bootstrap it                 (needs internet)
