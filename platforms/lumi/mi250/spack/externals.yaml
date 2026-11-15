@@ -70,7 +70,7 @@ packages:
         extra_attributes:
           compilers:
             c:   /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang
-            c++: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
+            cxx: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
             hip: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/bin/hipcc
   hipfft:
     buildable: false
@@ -89,7 +89,7 @@ packages:
         prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
         extra_attributes:
           compilers:
-            c: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
+            c: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang
             cxx: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
   llvm-amdgpu:
     buildable: false
@@ -98,7 +98,7 @@ packages:
         prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm
         extra_attributes:
           compilers:
-            c: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
+            c: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang
             cxx: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
   comgr:
     buildable: false
