@@ -1,6 +1,7 @@
 ---
 packages:
   cuda:
+    buildable: false
     externals:
       - spec: cuda@12.9.86
         prefix: /usr/local/cuda
