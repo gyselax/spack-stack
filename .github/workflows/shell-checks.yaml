@@ -1,0 +1,30 @@
+---
+name: Shell checks
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/shell-checks.yaml'
+      - '**.sh'
+  push:
+    paths:
+      - '.github/workflows/shell-checks.yaml'
+      - '**.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shell-lint:
+    name: Shell lint using shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38  # 2.0.0
+        env:
+          SHELLCHECK_OPTS: -e SC1091
