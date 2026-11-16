@@ -14,7 +14,7 @@ export GYSELA_SPACK_GROUP="${IDRPROJ}"
 export GYSELA_SPACK_JOBS=128
 GYSELA_SPACK_VERSION="$(tr -d '[:space:]' < "$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")/../../spack-version.txt")"
 export GYSELA_SPACK_VERSION
-export GYSELA_SPACK_PREFIX=${ALL_CCFRSCRATCH}/gysela-spack-${GYSELA_SPACK_VERSION}
+export GYSELA_SPACK_PREFIX=${ALL_CCFRSCRATCH}/gysela-spack/${GYSELA_SPACK_VERSION}
 
 export PYTHONPYCACHEPREFIX="${ALL_CCFRSCRATCH}/pycache"
 export SPACK_DISABLE_LOCAL_CONFIG=true

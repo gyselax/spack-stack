@@ -150,6 +150,13 @@ step_spack() {
     info "Spack ${GYSELA_SPACK_VERSION} in ${GYSELA_SPACK_PREFIX}"
     if [[ ! -f "${GYSELA_SPACK_PREFIX}/share/spack/setup-env.sh" ]]; then
         mkdir --parents "${GYSELA_SPACK_PREFIX}"
+        # The parent (gysela-spack/) holds one Spack per version: let the group add new ones
+        local parent
+        parent="$(dirname -- "${GYSELA_SPACK_PREFIX}")"
+        if [[ -O "${parent}" ]]; then
+            { chgrp "${GYSELA_SPACK_GROUP}" "${parent}" && chmod g+rwxs "${parent}"; } \
+                || warn "could not share ${parent} with group ${GYSELA_SPACK_GROUP}"
+        fi
         chmod g+s "${GYSELA_SPACK_PREFIX}"
         git clone --branch "v${GYSELA_SPACK_VERSION}" --depth 1 \
             https://github.com/spack/spack.git "${GYSELA_SPACK_PREFIX}"
