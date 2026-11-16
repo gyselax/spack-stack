@@ -198,7 +198,7 @@ step 2). It is sourced by `install.sh` and `activate.sh`, and must export:
 
 | Variable | Meaning |
 |---|---|
-| `GYSELA_SPACK_PREFIX` | where Spack is cloned and everything is installed, typically on a project scratch or work space |
+| `GYSELA_SPACK_PREFIX` | where Spack is cloned and everything is installed: `<base>/gysela/${GYSELA_SPACK_VERSION}`, with `<base>` typically a project scratch or work space |
 | `GYSELA_SPACK_VERSION` | read it from `spack-version.txt`, as the existing `site.sh` files do |
 | `GYSELA_SPACK_GROUP` | Unix group the install is shared with |
 | `GYSELA_SPACK_JOBS` | build parallelism outside Slurm |
