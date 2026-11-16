@@ -60,8 +60,8 @@ spack:
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
-      branch: releases/v2026.10
-      destination: $env/repos/patches-v2026.10
+      commit: 79eed77c70b2be7219f657fe6715ab4512269f20
+      destination: $env/repos/gysela-patches
     builtin:
-      branch: releases/v2026.10
-      destination: $spack/var/spack/repos/builtin-v2026.10
+      tag: v2026.10.1
+      destination: $spack/var/spack/repos/builtin-v2026.10.1
