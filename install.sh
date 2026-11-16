@@ -273,20 +273,10 @@ run_step() {
 
 # -------------------------------------------------------------------- main
 if [[ -n "${GYSELA_INSTALL_WORKER:-}" ]]; then
-    # Running inside srun: execute exactly one step, no lock/permission handling.
+    # Running inside srun: execute exactly one step, no permission handling.
     [[ "${step}" != all ]] || die "internal error: worker needs an explicit step"
     run_step "${step}"
     exit 0
-fi
-
-# One installation of a given environment at a time
-if command -v flock >/dev/null 2>&1 \
-   && mkdir --parents "$(dirname -- "${GYSELA_SPACK_PREFIX}")" 2>/dev/null \
-   && touch "${GYSELA_SPACK_PREFIX}.${env_name}.lock" 2>/dev/null; then
-    exec 9>"${GYSELA_SPACK_PREFIX}.${env_name}.lock"
-    flock -n 9 || die "another installation of ${env_name} is running"
-else
-    warn "cannot lock ${env_name}: concurrent installations are not prevented"
 fi
 
 trap 'trap - EXIT; fix_permissions' EXIT
