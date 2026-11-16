@@ -8,7 +8,7 @@ packages:
         extra_attributes:
           environment:
             prepend_path:
-              LD_LIBRARY_PATH: /opt/cray/libfabric/1.20.1/lib64/
+              LD_LIBRARY_PATH: /opt/cray/libfabric/1.20.1/lib64
         dependencies:
           - spec: gcc
           - spec: hip
@@ -27,36 +27,6 @@ packages:
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: comgr@6.3.3
-  rocm-cmake:
-    buildable: false
-    externals:
-      - prefix: /opt/rocm-6.3.3
-        spec: rocm-cmake@6.3.3
-  hipblas-common:
-    buildable: false
-    externals:
-      - prefix: /opt/rocm-6.3.3
-        spec: hipblas-common@6.3.3
-  hipblaslt:
-    buildable: false
-    externals:
-      - prefix: /opt/rocm-6.3.3
-        spec: hipblaslt@6.3.3
-  rocm-smi-lib:
-    buildable: false
-    externals:
-      - prefix: /opt/rocm-6.3.3
-        spec: rocm-smi-lib@6.3.3
-  rocm-core:
-    buildable: false
-    externals:
-      - prefix: /opt/rocm-6.3.3
-        spec: rocm-core@6.3.3
-  rocprofiler-register:
-    buildable: false
-    externals:
-      - prefix: /opt/rocm-6.3.3
-        spec: rocprofiler-register@6.3.3
   hip:
     buildable: false
     externals:
@@ -67,6 +37,16 @@ packages:
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: hipblas@6.3.3
+  hipblaslt:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: hipblaslt@6.3.3
+  hipblas-common:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: hipblas-common@6.3.3
   hipcub:
     buildable: false
     externals:
@@ -102,16 +82,16 @@ packages:
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: hipsparse@6.3.3
-  hsa-rocr-dev:
-    buildable: false
-    externals:
-      - prefix: /opt/rocm-6.3.3
-        spec: hsa-rocr-dev@6.3.3
   hsakmt-roct:
     buildable: false
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: hsakmt-roct@6.3.3
+  hsa-rocr-dev:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: hsa-rocr-dev@6.3.3
   llvm-amdgpu:
     buildable: false
     externals:
@@ -146,11 +126,31 @@ packages:
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: rocfft@6.3.3
+  rocm-cmake:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocm-cmake@6.3.3
+  rocm-core:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocm-core@6.3.3
   rocm-smi:
     buildable: false
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: rocm-smi@6.3.3
+  rocm-smi-lib:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocm-smi-lib@6.3.3
+  rocprofiler-register:
+    buildable: false
+    externals:
+      - prefix: /opt/rocm-6.3.3
+        spec: rocprofiler-register@6.3.3
   rocminfo:
     buildable: false
     externals:
@@ -191,7 +191,7 @@ packages:
     externals:
       - prefix: /opt/rocm-6.3.3
         spec: rocthrust@6.3.3
-  roctracer:
+  roctracer-dev:
     buildable: false
     externals:
       - prefix: /opt/rocm-6.3.3

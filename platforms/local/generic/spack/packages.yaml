@@ -6,7 +6,7 @@ packages:
       write: user
     prefer:
       - '~fortran ~mpi +openmp'
-    # No `target=` preference: Spack uses the host's CPU microarchitecture.
+      # No `target=` preference: Spack uses the host's CPU microarchitecture.
   c:
     require: gcc
   cxx:

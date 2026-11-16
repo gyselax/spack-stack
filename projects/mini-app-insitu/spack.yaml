@@ -1,3 +1,4 @@
+---
 spack:
   include:
     - path: gysela/externals.yaml

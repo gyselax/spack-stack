@@ -32,112 +32,177 @@ packages:
             c: /opt/cray/pe/gcc-native/14/bin/gcc
             cxx: /opt/cray/pe/gcc-native/14/bin/g++
             fortran: /opt/cray/pe/gcc-native/14/bin/gfortran
-  rocm-cmake:
+  comgr:
     buildable: false
     externals:
       - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-        spec: rocm-cmake@6.4.3
-  hipblas-common:
+        spec: comgr@6.4.3
+  hip:
     buildable: false
     externals:
       - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-        spec: hipblas-common@6.4.3
+        spec: hip@6.4.3
+  hipblas:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipblas@6.4.3
   hipblaslt:
     buildable: false
     externals:
       - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
         spec: hipblaslt@6.4.3
-  rocm-smi-lib:
+  hipblas-common:
     buildable: false
     externals:
       - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-        spec: rocm-smi-lib@6.4.3
+        spec: hipblas-common@6.4.3
+  hipcub:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipcub@6.4.3
+  hipfft:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipfft@6.4.3
+  hipfort:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipfort@6.4.3
+  hipify-clang:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipify-clang@6.4.3
+  hiprand:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hiprand@6.4.3
+  hipsolver:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipsolver@6.4.3
+  hipsparse:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hipsparse@6.4.3
+  hsakmt-roct:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hsakmt-roct@6.4.3
+  hsa-rocr-dev:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: hsa-rocr-dev@6.4.3
+  llvm-amdgpu:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: llvm-amdgpu@6.4.3/llvm
+        extra_attributes:
+          compilers:
+            c: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang
+            cxx: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
+  miopen-hip:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: miopen-hip@6.4.3
+  rccl:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rccl@6.4.3
+  rocalution:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocalution@6.4.3
+  rocblas:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocblas@6.4.3
+  rocfft:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocfft@6.4.3
+  rocm-cmake:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocm-cmake@6.4.3
   rocm-core:
     buildable: false
     externals:
       - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
         spec: rocm-core@6.4.3
+  rocm-smi:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocm-smi@6.4.3
+  rocm-smi-lib:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocm-smi-lib@6.4.3
   rocprofiler-register:
     buildable: false
     externals:
       - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
         spec: rocprofiler-register@6.4.3
-  hip:
+  rocminfo:
     buildable: false
     externals:
-      - spec: hip@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  hipfft:
-    buildable: false
-    externals:
-      - spec: hipfft@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  hiprand:
-    buildable: false
-    externals:
-      - spec: hiprand@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  hsa-rocr-dev:
-    buildable: false
-    externals:
-      - spec: hsa-rocr-dev@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  llvm-amdgpu:
-    buildable: false
-    externals:
-      - spec: llvm-amdgpu@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm
-        extra_attributes:
-          compilers:
-            c: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang
-            cxx: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4/llvm/bin/clang++
-  comgr:
-    buildable: false
-    externals:
-      - spec: comgr@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  rocblas:
-    buildable: false
-    externals:
-      - spec: rocblas@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocminfo@6.4.3
   rocprim:
     buildable: false
     externals:
-      - spec: rocprim@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  rocsolver:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocprim@6.4.3
+  rocprofiler:
     buildable: false
     externals:
-      - spec: rocsolver@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  rocrand:
-    buildable: false
-    externals:
-      - spec: rocrand@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  rocthrust:
-    buildable: false
-    externals:
-      - spec: rocthrust@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  rocfft:
-    buildable: false
-    externals:
-      - spec: rocfft@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocprofiler@6.4.3
   rocprofiler-sdk:
     buildable: false
     externals:
-      - spec: rocprofiler-sdk@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  hipsparse:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocprofiler-sdk@6.4.3
+  rocrand:
     buildable: false
     externals:
-      - spec: hipsparse@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
-  hipblas:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocrand@6.4.3
+  rocsolver:
     buildable: false
     externals:
-      - spec: hipblas@6.4.3
-        prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocsolver@6.4.3
+  rocsparse:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocsparse@6.4.3
+  rocthrust:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: rocthrust@6.4.3
+  roctracer-dev:
+    buildable: false
+    externals:
+      - prefix: /appl/lumi/SW/LUMI-25.09/G/EB/rocm/6.4.4
+        spec: roctracer-dev@6.4.3
