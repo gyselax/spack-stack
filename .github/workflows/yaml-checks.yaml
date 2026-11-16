@@ -1,0 +1,40 @@
+---
+name: YAML checks
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - '.clang-format'
+      - '.clang-tidy'
+      - '.gersemirc'
+      - '.github/workflows/yaml-checks.yaml'
+      - '**.yaml'
+      - '**.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '.clang-format'
+      - '.clang-tidy'
+      - '.gersemirc'
+      - '.github/workflows/yaml-checks.yaml'
+      - '**.yaml'
+      - '**.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  yaml-lint:
+    name: YAML lint using yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install yamllint
+        run: pipx install yamllint~=1.37
+      - run: |
+          yamllint $(git ls-files '*.yml' '*.yaml')
