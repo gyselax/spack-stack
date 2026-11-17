@@ -7,18 +7,26 @@ packages:
     prefer:
       - 'target=sapphirerapids'
   c:
-    require: gcc@14.2.0
+    prefer:
+      - gcc@14.2.0
   cxx:
-    require: gcc@14.2.0
+    prefer:
+      - gcc@14.2.0
   ginkgo:
-    require: '~openmp +cuda cuda_arch=90'
+    require:
+      - '~openmp +cuda cuda_arch=90'
   kokkos:
-    require: '~openmp +cuda cuda_arch=90'
+    require:
+      - '~openmp +cuda cuda_arch=90'
   kokkos-fft:
-    require: 'host_backend=fftw-serial'
+    require:
+      - 'host_backend=fftw-serial'
   kokkos-kernels:
-    require: '~shared'
+    require:
+      - '~shared'
   lapack:
-    require: openblas@0.3 ~dynamic_dispatch
+    require:
+      - openblas@0.3 ~dynamic_dispatch
   mpi:
-    require: openmpi@4.1
+    require:
+      - openmpi@4.1

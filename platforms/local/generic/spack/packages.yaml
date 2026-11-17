@@ -8,18 +8,26 @@ packages:
       - '~fortran ~mpi +openmp'
       # No `target=` preference: Spack uses the host's CPU microarchitecture.
   c:
-    require: gcc
+    prefer:
+      - gcc
   cxx:
-    require: gcc
+    prefer:
+      - gcc
   ginkgo:
-    require: '+openmp'
+    require:
+      - '+openmp'
   kokkos:
-    require: '+openmp'
+    require:
+      - '+openmp'
   kokkos-fft:
-    require: 'host_backend=fftw-openmp'
+    require:
+      - 'host_backend=fftw-openmp'
   kokkos-kernels:
-    require: '~shared'
+    require:
+      - '~shared'
   lapack:
-    require: openblas
+    require:
+      - openblas
   mpi:
-    require: openmpi
+    require:
+      - openmpi

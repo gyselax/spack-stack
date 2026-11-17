@@ -7,16 +7,23 @@ packages:
     prefer:
       - 'target=zen4'
   c:
-    require: gcc@13.3.1
+    prefer:
+      - gcc@13.3.1
   cxx:
-    require: gcc@13.3.1
+    prefer:
+      - gcc@13.3.1
   ginkgo:
-    require: '+openmp'
+    require:
+      - '+openmp'
   kokkos:
-    require: '+openmp'
+    require:
+      - '+openmp'
   kokkos-fft:
-    require: 'host_backend=fftw-openmp'
+    require:
+      - 'host_backend=fftw-openmp'
   mpi:
-    require: cray-mpich
+    require:
+      - cray-mpich
   lapack:
-    require: openblas
+    require:
+      - openblas

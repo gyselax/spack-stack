@@ -7,18 +7,26 @@ packages:
     prefer:
       - 'target=zen3'
   c:
-    require: gcc@13.3.1
+    prefer:
+      - gcc@13.3.1
   cxx:
-    require: gcc@13.3.1
+    prefer:
+      - gcc@13.3.1
   ginkgo:
-    require: '~openmp +rocm amdgpu_target=gfx90a'
+    require:
+      - '~openmp +rocm amdgpu_target=gfx90a'
   kokkos:
-    require: '~openmp +rocm amdgpu_target=gfx90a'
+    require:
+      - '~openmp +rocm amdgpu_target=gfx90a'
   kokkos-fft:
-    require: 'host_backend=fftw-serial'
+    require:
+      - 'host_backend=fftw-serial'
   kokkos-kernels:
-    require: '~shared'
+    require:
+      - '~shared'
   mpi:
-    require: cray-mpich
+    require:
+      - cray-mpich
   lapack:
-    require: openblas
+    require:
+      - openblas

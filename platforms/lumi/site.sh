@@ -16,5 +16,7 @@ GYSELA_SPACK_VERSION="$(tr -d '[:space:]' < "$(dirname -- "$(readlink -f -- "${B
 export GYSELA_SPACK_VERSION
 export GYSELA_SPACK_PREFIX=/scratch/project_465002992/gysela-spack/${GYSELA_SPACK_VERSION}
 
+# Redirects bazel cache to /tmp to avoid inode saturation, see https://bazel.build/remote/output-directories
+export TEST_TMPDIR=/tmp/$USER
 export PYTHONPYCACHEPREFIX="/flash/project_465002992/pycache"
 export SPACK_DISABLE_LOCAL_CONFIG=true
