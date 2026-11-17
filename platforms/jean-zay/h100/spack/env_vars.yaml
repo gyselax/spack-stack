@@ -1,0 +1,8 @@
+# Compilers and flags for the CMake presets of cmake/CMakePresets.json,
+# on jean-zay/h100. Spack sets them when the environment is activated and
+# removes them when it is deactivated. Unset variables keep CMake's defaults.
+# The compile option ipa-sra triggers a segfault with nvcc (reported to Nvidia).
+env_vars:
+  set:
+    GYSELA_CXX_COMPILER: "nvcc_wrapper"
+    GYSELA_CXX_FLAGS: "-fno-ipa-sra -Wall -Wno-sign-compare --Werror cross-execution-space-call -Xcudafe --diag_suppress=unsigned_compare_with_zero -Xcudafe --diag_suppress=integer_sign_change"

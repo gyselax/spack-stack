@@ -11,7 +11,10 @@
 #   3. deactivates the Spack environment that is active, if any,
 #   4. activates the environment named after environment-name.txt, with the
 #      version from version.txt unless --version selects an older one,
-#   5. adds Kokkos Tools to LD_LIBRARY_PATH when the environment provides it.
+#   5. adds Kokkos Tools to LD_LIBRARY_PATH when the environment provides it,
+#   6. exports GYSELA_STACK_ROOT, for the CMake presets of cmake/CMakePresets.json
+#      (the compilers and flags they use come with the environment, from
+#      platforms/<site>/<arch>/spack/env_vars.yaml).
 
 if [ "${BASH_SOURCE[0]}" -ef "$0" ]
 then
@@ -120,6 +123,9 @@ _gys_activate() {
             fi
         done
     fi
+
+    # For the CMake presets, included from $penv{GYSELA_STACK_ROOT}/cmake/CMakePresets.json
+    export GYSELA_STACK_ROOT="${root}"
 
     echo "==> Activated ${env_name}" >&2
 }
