@@ -60,6 +60,10 @@ spack:
       require:
         - '@10.9.8'
   repos:
+    deisa:
+      git: https://github.com/deisa-project/spack.git
+      commit: 1f8cb0c9f6b7c5f84e8ba3cffb79bc7ba43ea266
+      destination: $env/repos/deisa
     patches:
       git: https://github.com/gyselax/spack.git
       commit: 79eed77c70b2be7219f657fe6715ab4512269f20
