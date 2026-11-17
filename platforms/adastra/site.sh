@@ -14,7 +14,7 @@ export GYSELA_SPACK_GROUP="gen2224"
 export GYSELA_SPACK_JOBS=96
 GYSELA_SPACK_VERSION="$(tr -d '[:space:]' < "$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")/../../spack-version.txt")"
 export GYSELA_SPACK_VERSION
-export GYSELA_SPACK_PREFIX=${ALL_CCFRSCRATCH}/gysela-spack/${GYSELA_SPACK_VERSION}
+export GYSELA_SPACK_PREFIX=${ALL_CCFRWORK}/gysela-spack/${GYSELA_SPACK_VERSION}
 
 # Redirects bazel cache to /tmp to avoid inode saturation, see https://bazel.build/remote/output-directories
 export TEST_TMPDIR=/tmp/$USER
