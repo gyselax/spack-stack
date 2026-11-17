@@ -63,7 +63,7 @@ spack:
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
-      commit: 79eed77c70b2be7219f657fe6715ab4512269f20
+      commit: f4b9b7c92f58b85831f7ea1d1f5336d6384e50a2
       destination: $env/repos/gysela-patches
     builtin:
       tag: v2026.10.1
