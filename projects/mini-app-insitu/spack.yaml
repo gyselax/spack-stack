@@ -15,8 +15,9 @@ spack:
     - pdi@1.11
 
     - py-dask
-    - py-deisa-dask +mpi
-    - py-deisa-ray
+    - py-deisa-dask@0.7.0
+    - py-deisa-ray@0.1.9
+    - py-dask-ml@2025.1.0
     - py-distributed
     - py-equinox
     - py-h5py +mpi
@@ -58,6 +59,9 @@ spack:
     npm:
       require:
         - '@10.9.8'
+    py-distributed:
+      require:
+        - '@2025.5.0'
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
