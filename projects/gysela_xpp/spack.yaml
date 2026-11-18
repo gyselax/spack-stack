@@ -68,3 +68,8 @@ spack:
     builtin:
       tag: v2026.10.1
       destination: $spack/var/spack/repos/builtin-v2026.10.1
+  view:
+    default:
+      root: .spack-env/view
+      exclude:
+        - 'gcc-runtime'
