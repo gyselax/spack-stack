@@ -18,7 +18,6 @@ export GYSELA_SPACK_PREFIX=${ALL_CCFRWORK}/gysela-spack/${GYSELA_SPACK_VERSION}
 
 # Redirects bazel cache to /tmp to avoid inode saturation, see https://bazel.build/remote/output-directories
 export TEST_TMPDIR=/tmp/$USER
-export PYTHONPYCACHEPREFIX="${ALL_CCFRSCRATCH}/pycache"
 export SPACK_DISABLE_LOCAL_CONFIG=true
 
 if [[ -n "${JOBSCRATCH:-}" && -d "$JOBSCRATCH" ]]; then
@@ -33,3 +32,6 @@ export GYSELA_SLURM_TIME="02:00:00"
 export GYSELA_SLURM_GPUS_CONCRETIZE=1
 export GYSELA_SLURM_GPUS_INSTALL=3
 # GYSELA_SLURM_ACCOUNT must be provided (env var or --slurm-account)
+
+# Python bytecode cache in a private directory of the temporary space
+export PYTHONPYCACHEPREFIX="${TMPDIR:-/tmp}/${USER:-$(id -un)}/pycache"

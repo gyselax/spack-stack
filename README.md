@@ -233,7 +233,11 @@ you own under the prefix.
 `SPACK_DISABLE_LOCAL_CONFIG=true`, so that `~/.spack` cannot change a build, and
 purges the loaded modules. Where `/tmp` is too small for builds (Jean Zay),
 `site.sh` points `TMPDIR`, and thus Spack's build stages, to the job's scratch
-space.
+space. Python's bytecode cache goes to a private per-user directory,
+`${TMPDIR:-/tmp}/<user>/pycache` (`PYTHONPYCACHEPREFIX`, set by
+`platforms/python-cache.sh`), rather than next to read-only shared installs. It
+is private because Python runs a cached `.pyc` that matches its source's size and
+date: whoever can write the cache can run code in your Python processes.
 
 **7. Run-time library paths.** Spack does not add packages to
 `LD_LIBRARY_PATH` when activating an environment, so `activate.sh` does it for

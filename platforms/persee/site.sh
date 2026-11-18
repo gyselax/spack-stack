@@ -21,3 +21,6 @@ export GYSELA_SPACK_PREFIX="${GYSELA_SPACK_BASE}/gysela-spack/${GYSELA_SPACK_VER
 # Redirects bazel cache to /tmp to avoid inode saturation, see https://bazel.build/remote/output-directories
 export TEST_TMPDIR=/tmp/$USER
 export SPACK_DISABLE_LOCAL_CONFIG=true
+
+# Python bytecode cache in a private directory of the temporary space
+export PYTHONPYCACHEPREFIX="${TMPDIR:-/tmp}/${USER:-$(id -un)}/pycache"

@@ -23,3 +23,6 @@ export GYSELA_SPACK_PREFIX="${GYSELA_SPACK_BASE}/gysela-spack/${GYSELA_SPACK_VER
 export GYSELA_DETECT_EXTERNALS="gcc"
 
 export SPACK_DISABLE_LOCAL_CONFIG=true
+
+# Python bytecode cache in a private directory of the temporary space
+export PYTHONPYCACHEPREFIX="${TMPDIR:-/tmp}/${USER:-$(id -un)}/pycache"
