@@ -3,7 +3,7 @@ packages:
   cuda:
     buildable: false
     externals:
-      - spec: cuda@12.9.86
+      - spec: cuda@12.9.86+allow-unsupported-compilers
         prefix: /usr/local/cuda
   gcc:
     externals:
