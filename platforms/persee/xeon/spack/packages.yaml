@@ -2,17 +2,20 @@
 packages:
   all:
     permissions:
-      read: group
+      read: world
       write: group
+    target:
+      - 'cascadelake'
     prefer:
-      - '~fortran ~mpi +openmp'
-      - 'target=cascadelake'
+      - '~fortran'
+      - '~mpi'
+      - '+openmp'
   c:
     prefer:
-      - gcc@13.2.0
+      - 'gcc@13.2'
   cxx:
     prefer:
-      - gcc@13.2.0
+      - 'gcc@13.2'
   ginkgo:
     require:
       - '+openmp'
@@ -27,10 +30,10 @@ packages:
       - '~shared'
   lapack:
     require:
-      - openblas@0.3
+      - 'openblas@0.3'
   mpi:
     require:
-      - openmpi@5.0
+      - 'openmpi@5.0'
   py-jaxlib:
     require:
       - '%cxx=llvm@18'

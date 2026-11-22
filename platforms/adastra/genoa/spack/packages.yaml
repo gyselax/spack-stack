@@ -4,14 +4,14 @@ packages:
     permissions:
       read: world
       write: group
-    prefer:
-      - 'target=zen4'
+    target:
+      - 'zen4'
   c:
     prefer:
-      - gcc@13.3.1
+      - 'gcc@13.3'
   cxx:
     prefer:
-      - gcc@13.3.1
+      - 'gcc@13.3'
   ginkgo:
     require:
       - '+openmp'
@@ -21,9 +21,12 @@ packages:
   kokkos-fft:
     require:
       - 'host_backend=fftw-openmp'
-  mpi:
-    require:
-      - cray-mpich
   lapack:
     require:
-      - openblas
+      - 'openblas'
+  mpi:
+    require:
+      - 'cray-mpich'
+  py-jaxlib:
+      require:
+        - '%cxx=llvm@18'

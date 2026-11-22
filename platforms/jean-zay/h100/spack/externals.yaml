@@ -3,7 +3,7 @@ packages:
   cuda:
     buildable: false
     externals:
-      - spec: cuda@12.8.61
+      - spec: cuda@12.8.61+allow-unsupported-compilers
         prefix: /lustre/fshomisc/sys/common/nvidia/cuda/12.8
         extra_attributes:
           environment:

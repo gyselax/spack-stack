@@ -19,7 +19,6 @@ packages:
             cxx: /opt/rh/gcc-toolset-13/root/usr/bin/g++
             fortran: /opt/rh/gcc-toolset-13/root/usr/bin/gfortran
   llvm:
-    buildable: false
     externals:
       - spec: llvm@20.1.6+clang~flang+lld+lldb
         prefix: /opt/software/gaia/prod/5.0.0/llvm-20.1.6-gcc-13.2.1-jujm

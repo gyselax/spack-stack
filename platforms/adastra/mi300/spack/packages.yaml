@@ -4,14 +4,14 @@ packages:
     permissions:
       read: world
       write: group
-    prefer:
-      - 'target=zen3'
+    target:
+      - 'zen3'
   c:
     prefer:
-      - gcc@13.3.1
+      - 'gcc@13.3'
   cxx:
-    require:
-      - gcc@13.3.1
+    prefer:
+      - 'gcc@13.3'
   ginkgo:
     require:
       - '~openmp +rocm amdgpu_target=gfx942'
@@ -24,9 +24,13 @@ packages:
   kokkos-kernels:
     require:
       - '~shared'
-  mpi:
-    require:
-      - cray-mpich
   lapack:
     require:
-      - openblas
+      - 'openblas'
+  mpi:
+    require:
+      - 'cray-mpich'
+  py-jaxlib:
+      require:
+        - '%cxx=llvm@18'
+        - '+rocm amdgpu_target=gfx942'

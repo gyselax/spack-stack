@@ -5,14 +5,15 @@ packages:
       read: world
       write: user
     prefer:
-      - '~fortran ~mpi +openmp'
-      # No `target=` preference: Spack uses the host's CPU microarchitecture.
+      - '~fortran'
+      - '~mpi'
+      - '+openmp'
   c:
     prefer:
-      - gcc
+      - 'gcc'
   cxx:
     prefer:
-      - gcc
+      - 'gcc'
   ginkgo:
     require:
       - '+openmp'
@@ -27,7 +28,7 @@ packages:
       - '~shared'
   lapack:
     require:
-      - openblas
+      - 'openblas'
   mpi:
     require:
-      - openmpi
+      - 'openmpi'
