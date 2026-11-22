@@ -75,11 +75,11 @@ spack:
     deisa:
       git: https://github.com/deisa-project/spack.git
       commit: 1f8cb0c9f6b7c5f84e8ba3cffb79bc7ba43ea266
-      destination: $env/repos/deisa
+      destination: repos/deisa
     patches:
       git: https://github.com/gyselax/spack.git
       commit: 7f19e5e7b2f68939b3eefdc14b9472e6e3df374a
-      destination: $env/repos/gysela-patches
+      destination: repos/gysela-patches
     builtin:
       tag: v2026.10.1
       destination: $spack/var/spack/repos/builtin-v2026.10.1

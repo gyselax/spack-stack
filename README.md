@@ -322,7 +322,7 @@ spack:
     patches:
       git: https://github.com/gyselax/spack.git
       commit: <commit>
-      destination: $env/repos/gysela-patches
+      destination: repos/gysela-patches
     builtin:
       tag: v2026.10.1
       destination: $spack/var/spack/repos/builtin-v2026.10.1
