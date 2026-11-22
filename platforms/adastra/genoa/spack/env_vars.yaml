@@ -1,6 +1,7 @@
 # Compilers and flags for the CMake presets of cmake/CMakePresets.json,
 # on adastra/genoa. Spack sets them when the environment is activated and
 # removes them when it is deactivated. Unset variables keep CMake's defaults.
+---
 env_vars:
   set:
     GYSELA_CXX_COMPILER: "g++"

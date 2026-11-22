@@ -2,6 +2,7 @@
 # on jean-zay/h100. Spack sets them when the environment is activated and
 # removes them when it is deactivated. Unset variables keep CMake's defaults.
 # The compile option ipa-sra triggers a segfault with nvcc (reported to Nvidia).
+---
 env_vars:
   set:
     GYSELA_CXX_COMPILER: "nvcc_wrapper"

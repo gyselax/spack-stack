@@ -3,6 +3,7 @@
 # removes them when it is deactivated. Unset variables keep CMake's defaults.
 # The compile option ipa-sra triggers a segfault with nvcc (reported to Nvidia).
 # CUDA 12.9 warns about the Volta architecture: -Wno-deprecated-gpu-targets.
+---
 env_vars:
   set:
     GYSELA_CXX_COMPILER: "nvcc_wrapper"

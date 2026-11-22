@@ -28,5 +28,5 @@ packages:
     require:
       - 'cray-mpich'
   py-jaxlib:
-      require:
-        - '%cxx=llvm@18'
+    require:
+      - '%cxx=llvm@18'
