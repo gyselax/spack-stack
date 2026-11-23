@@ -57,6 +57,7 @@ Options:
   --step <step>            all (default) | spack | env | concretize | mirror | crates | install
   --slurm-account <acct>   Slurm account (or set GYSELA_SLURM_ACCOUNT)
   --slurm / --no-slurm     force or disable Slurm mode (default: GYSELA_USE_SLURM from site.sh)
+  --force                  delete and recreate the environment if it already exists
   -h, --help               show this help
 EOF
 }
@@ -65,6 +66,7 @@ EOF
 platform="" arch="" project="" step="all"
 slurm_account="${GYSELA_SLURM_ACCOUNT:-}"
 slurm_override=""
+force=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -75,6 +77,7 @@ while [[ $# -gt 0 ]]; do
         --slurm-account) slurm_account="${2:?--slurm-account needs a value}"; shift 2 ;;
         --slurm)         slurm_override=1; shift ;;
         --no-slurm)      slurm_override=0; shift ;;
+        --force)         force=1; shift ;;
         -h|--help)       usage; exit 0 ;;
         *)               usage >&2; die "unknown argument: $1" ;;
     esac
@@ -170,6 +173,11 @@ step_env() {
     load_spack
     info "Preparing the Spack environment ${env_name}"
     if spack location --env "${env_name}" >/dev/null 2>&1; then
+        if [[ "${force}" != 1 ]]; then
+            die "environment ${env_name} already exists: pass --force to delete and" \
+                "recreate it, or use --step install to resume its installation"
+        fi
+        info "Deleting the existing environment ${env_name} (--force)"
         spack env remove --yes-to-all "${env_name}"
     fi
     spack env create "${env_name}"

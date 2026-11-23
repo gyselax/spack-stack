@@ -76,6 +76,7 @@ export GYSELA_SLURM_ACCOUNT=abc@h100
   --step <step>            all (default) | spack | env | concretize | mirror | crates | install
   --slurm-account <acct>   Slurm account (or set GYSELA_SLURM_ACCOUNT)
   --slurm / --no-slurm     force or disable Slurm mode (default: GYSELA_USE_SLURM from site.sh)
+  --force                  delete and recreate the environment if it already exists
 ```
 
 The environment is named after `environment-name.txt`, for example
@@ -97,9 +98,9 @@ runs in place.
 - **One step at a time:** `--step <step>` runs only that step. This is how to
   resume after a failure, or after a compute-node job reached its time limit:
   `--step install` again continues where Spack stopped.
-- **Versions side by side:** `env` deletes and recreates the environment of the
-  current version only. To keep the current environment and build a new one next
-  to it, bump `version.txt`.
+- **No accidental reinstall:** the `env` step (part of a full run) stops if the
+  environment of the current version already exists. Pass `--force` to delete
+  and recreate it, or bump `version.txt` to build a new one next to it.
 - **Permissions:** at the end, every file you own under the Spack prefix is given
   to the platform's group and made group-readable and writable, so that the
   install can be shared.
