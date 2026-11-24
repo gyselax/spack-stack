@@ -75,6 +75,5 @@ spack:
       root: .spack-env/view
       projections:
         all: "{name}-{version}-{hash}"
-      group: apps
       exclude:
         - 'gcc-runtime'
