@@ -27,7 +27,7 @@ spack:
     - py-pyyaml
     - py-scikit-learn
     - py-tqdm
-    - py-xarray
+    - py-xarray +io
   concretizer:
     reuse: false
     unify: true
