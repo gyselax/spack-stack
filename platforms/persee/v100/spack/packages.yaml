@@ -34,7 +34,3 @@ packages:
   mpi:
     require:
       - 'openmpi@5.0 +cuda cuda_arch=70'
-  py-jaxlib:
-    require:
-      - '%cxx=llvm@18'
-      - '+cuda cuda_arch=70'

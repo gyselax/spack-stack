@@ -30,10 +30,6 @@ packages:
   mpi:
     require:
       - 'openmpi@4.1'
-  py-jaxlib:
-    require:
-      - '%cxx=llvm@18'
-      - '+cuda cuda_arch=90'
   py-ml-dtypes:
     require:
       - 'target=:icelake'

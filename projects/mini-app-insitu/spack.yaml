@@ -6,44 +6,28 @@ spack:
     - path: gysela
       optional: true
   specs:
-    - group: compilers
-      specs:
-        - llvm@18 +clang
+    - cxx
+    - cmake@3.31
+    - ddc@0.15 +pdi
+    - gyselalibxx@0.8
+    - mpi
+    - paraconf@1.0
+    - pdi@1.11
 
-    - group: apps
-      needs:
-        - compilers
-      specs:
-        - cxx
-        - cmake@3.31
-        - ddc@0.15 +pdi
-        - gyselalibxx@0.8
-        - mpi
-        - paraconf@1.0
-        - pdi@1.11
-
-        - py-dask
-        - py-deisa-dask@0.7.0
-        - py-deisa-ray@0.1.9
-        - py-dask-ml@2025.1.0
-        - py-distributed@2025.5.0
-        - py-equinox
-        - py-h5py +mpi
-        - py-iops-benchmark +bayesian
-        - py-jax
-        - py-matplotlib
-        - py-mpi4py
-        - py-numpy
-        - py-pyyaml
-        - py-scikit-learn
-        - py-scimba +jax
-        - py-tqdm
-        - py-xarray
-      override:
-        packages:
-          py-llvmlite:
-            require:
-              - '%llvm ~clang'
+    - py-dask
+    - py-deisa-dask@0.7.0
+    - py-deisa-ray@0.1.9
+    - py-dask-ml@2025.1.0
+    - py-distributed@2025.5.0
+    - py-h5py +mpi
+    - py-iops-benchmark +bayesian
+    - py-matplotlib
+    - py-mpi4py
+    - py-numpy
+    - py-pyyaml
+    - py-scikit-learn
+    - py-tqdm
+    - py-xarray
   concretizer:
     reuse: false
     unify: true
@@ -62,6 +46,9 @@ spack:
     py-dask:
       prefer:
         - '~dataframe'
+    py-llvmlite:
+      require:
+        - '%llvm ~clang'
     py-pandas:
       prefer:
         - '~performance'

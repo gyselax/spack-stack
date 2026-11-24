@@ -30,7 +30,3 @@ packages:
   mpi:
     require:
       - 'cray-mpich'
-  py-jaxlib:
-    require:
-      - '%cxx=llvm@18'
-      - '+rocm amdgpu_target=gfx90a'

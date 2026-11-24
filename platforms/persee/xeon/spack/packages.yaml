@@ -34,6 +34,3 @@ packages:
   mpi:
     require:
       - 'openmpi@5.0'
-  py-jaxlib:
-    require:
-      - '%cxx=llvm@18'

@@ -27,6 +27,3 @@ packages:
   mpi:
     require:
       - 'cray-mpich'
-  py-jaxlib:
-    require:
-      - '%cxx=llvm@18'
