@@ -1,0 +1,33 @@
+---
+spack:
+  include:
+    - path: gysela/externals.yaml
+      optional: true
+    - path: gysela
+      optional: true
+  specs:
+    - cxx
+    - cmake@3.31
+    - ddc@0.15
+    - gyselalibxx@0.8
+    - mpi
+    - paraconf
+    - pdi
+  concretizer:
+    reuse: false
+    unify: true
+  repos:
+    patches:
+      git: https://github.com/gyselax/spack.git
+      commit: 7f19e5e7b2f68939b3eefdc14b9472e6e3df374a
+      destination: repos/gysela-patches
+    builtin:
+      tag: v2026.10.1
+      destination: $spack/var/spack/repos/builtin-v2026.10.1
+  view:
+    default:
+      root: .spack-env/view
+      projections:
+        all: "{name}-{version}-{hash}"
+      exclude:
+        - 'gcc-runtime'
