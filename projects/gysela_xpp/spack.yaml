@@ -48,15 +48,9 @@ spack:
     reuse: false
     unify: true
   packages:
-    arrow:
-      prefer:
-        - '~mimalloc'
     hdf5:
       require:
         - '+subfiling'
-    py-dask:
-      prefer:
-        - '~dataframe'
     py-pandas:
       prefer:
         - '~performance'

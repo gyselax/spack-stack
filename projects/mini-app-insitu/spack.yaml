@@ -37,24 +37,15 @@ spack:
         java: 4
         openjdk: 4
   packages:
-    arrow:
-      prefer:
-        - '~mimalloc'
     hdf5:
       require:
         - '+subfiling'
-    py-dask:
-      prefer:
-        - '~dataframe'
     py-llvmlite:
       require:
         - '%llvm ~clang'
     py-pandas:
       prefer:
         - '~performance'
-    py-torch:
-      prefer:
-        - '~valgrind'
     npm:
       require:
         - '@10.9.8'
