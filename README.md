@@ -12,8 +12,9 @@ It keeps two things apart:
   where Spack lives, which system packages (compilers, MPI, CUDA/ROCm) to reuse,
   which variants to use (`platforms/<site>/…`).
 
-`install.sh` combines one project with one platform and architecture into a
-Spack environment, and `activate.sh` activates it in your shell.
+`install.sh` combines a project with a platform and architecture into a
+Spack environment (one per project, several projects at once if needed), and
+`activate.sh` activates it in your shell.
 
 ## Contents
 
@@ -69,10 +70,11 @@ takes hours: run it inside `tmux` or `screen`, or in a batch job):
 ## Installing an environment: `install.sh`
 
 ```
-./install.sh --platform <site> --arch <arch> --project <project> [options]
+./install.sh --platform <site> --arch <arch> --project <project> [--project ...] [options]
 
+  --project <project>      repeat it, or give a comma-separated list, for several
   --step <step>            all (default) | spack | env | concretize | install
-  --force                  delete and recreate the environment if it already exists
+  --force                  delete and recreate the environments that already exist
 ```
 
 The environment is named after `environment-name.txt`, for example
@@ -85,12 +87,18 @@ The environment is named after `environment-name.txt`, for example
 | `concretize` | concretize, print the specs and the `spack.lock` checksum |
 | `install` | build and install |
 
+- **Several projects:** `--project a --project b`, or `--project a,b`, builds one
+  environment per project, one after the other, with the same Spack (installed
+  once). Packages that concretize identically are built once and reused,
+  since all the environments share the Spack store. The run stops at
+  the first failure; `--step install` with the same projects resumes it.
 - **One step at a time:** `--step <step>` runs only that step. This is how to
   resume after a failure, or after a job reached its time limit:
   `--step install` again continues where Spack stopped.
-- **No accidental reinstall:** the `env` step (part of a full run) stops if the
-  environment of the current version already exists. Pass `--force` to delete
-  and recreate it, or bump `version.txt` to build a new one next to it.
+- **No accidental reinstall:** the `env` step (part of a full run) stops, before
+  anything is built, if the environment of the current version of any of the
+  projects already exists. Pass `--force` to delete and recreate them,
+  or bump `version.txt` to build new ones next to them.
 - **Permissions:** at the end, every file you own under the Spack prefix is given
   to the platform's group and made group-readable and writable, so that the
   install can be shared.
