@@ -13,6 +13,17 @@ spack:
     - mpi
     - paraconf
     - pdi
+
+    - py-dask@2026.3 +distributed
+    - py-deisa-dask
+    - py-distributed
+    - py-h5py@3.16
+    - py-matplotlib@3.11
+    - py-mpi4py
+    - py-numpy@2.4
+    - py-pandas
+    - py-pyyaml@6.0
+    - py-xarray@2026.4 +io
   concretizer:
     reuse: false
     unify: true
