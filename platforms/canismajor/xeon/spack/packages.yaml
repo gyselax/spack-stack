@@ -1,0 +1,36 @@
+---
+packages:
+  all:
+    permissions:
+      read: world
+      write: group
+    target:
+      - 'haswell'
+    prefer:
+      - '~fortran'
+      - '~mpi'
+      - '+openmp'
+  c:
+    prefer:
+      - 'gcc@13.2'
+  cxx:
+    prefer:
+      - 'gcc@13.2'
+  ginkgo:
+    require:
+      - '+openmp'
+  kokkos:
+    require:
+      - '+openmp'
+  kokkos-fft:
+    require:
+      - 'host_backend=fftw-openmp'
+  kokkos-kernels:
+    require:
+      - '~shared'
+  lapack:
+    require:
+      - 'openblas@0.3'
+  mpi:
+    require:
+      - 'openmpi@5.0'
