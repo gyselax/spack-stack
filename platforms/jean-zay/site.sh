@@ -24,14 +24,5 @@ if [[ -n "${JOBSCRATCH:-}" && -d "$JOBSCRATCH" ]]; then
     export TMPDIR="$JOBSCRATCH"
 fi
 
-# Build on GPU compute nodes (no internet there: sources are mirrored from the login node)
-export GYSELA_USE_SLURM=1
-export GYSELA_SLURM_CPUS_PER_GPU=24
-export GYSELA_SLURM_QOS="qos_gpu_h100-dev"
-export GYSELA_SLURM_TIME="02:00:00"
-export GYSELA_SLURM_GPUS_CONCRETIZE=1
-export GYSELA_SLURM_GPUS_INSTALL=3
-# GYSELA_SLURM_ACCOUNT must be provided (env var or --slurm-account)
-
 # Python bytecode cache in a private directory of the temporary space
 export PYTHONPYCACHEPREFIX="${TMPDIR:-/tmp}/${USER:-$(id -un)}/pycache"

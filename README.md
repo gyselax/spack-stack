@@ -18,9 +18,8 @@ Spack environment, and `activate.sh` activates it in your shell.
 ## Contents
 
 ```
-install.sh                  build an environment (Spack, concretize, mirror, install)
+install.sh                  build an environment (Spack, concretize, install)
 activate.sh                 activate an installed environment (to be sourced)
-vendor-crates.sh            download Rust crates for offline builds (used by install.sh)
 version.txt                 toolchain version, part of every environment name
 spack-version.txt           Spack version used on every platform
 environment-name.txt        naming rule of the environments: {project}-{arch}-{version}
@@ -28,7 +27,7 @@ cmake/CMakePresets.json     CMake presets to build a project against an environm
 projects/<project>/
     spack.yaml              specs, concretizer settings, package repositories
 platforms/<site>/
-    site.sh                 site settings: modules, Spack location, group, jobs, Slurm
+    site.sh                 site settings: modules, Spack location, group, jobs
     <arch>/spack/
         externals.yaml      system packages Spack must reuse
         packages.yaml       variants, providers, targets, permissions
@@ -42,9 +41,9 @@ its `generic` architecture, is meant for a workstation or laptop.
 ## Requirements
 
 - bash, git, and a Python 3 for Spack itself;
-- internet access where `install.sh` runs (on clusters: the login node);
-- on platforms in Slurm mode (Jean Zay): a Slurm account allowed on the GPU
-  partition;
+- internet access where `install.sh` runs, for every step: downloads happen
+  during the builds too (Spack sources, Rust crates, …). On Jean Zay, use a
+  compilation node with internet access;
 - on `local`: a GCC with C, C++ and Fortran compilers (`gfortran`), which is
   detected automatically.
 
@@ -59,11 +58,10 @@ cd spack-stack
 . ./activate.sh --platform local --arch generic --project gyselalibxx
 ```
 
-On Jean Zay, from a login node (inside `tmux` or `screen`: the steps that run on
-compute nodes block until their job ends):
+On Jean Zay, from a compilation node with internet access (a full installation
+takes hours: run it inside `tmux` or `screen`, or in a batch job):
 
 ```bash
-export GYSELA_SLURM_ACCOUNT=abc@h100
 ./install.sh --platform jean-zay --arch h100 --project gyselalibxx
 . ./activate.sh --platform jean-zay --arch h100 --project gyselalibxx
 ```
@@ -73,30 +71,22 @@ export GYSELA_SLURM_ACCOUNT=abc@h100
 ```
 ./install.sh --platform <site> --arch <arch> --project <project> [options]
 
-  --step <step>            all (default) | spack | env | concretize | mirror | crates | install
-  --slurm-account <acct>   Slurm account (or set GYSELA_SLURM_ACCOUNT)
-  --slurm / --no-slurm     force or disable Slurm mode (default: GYSELA_USE_SLURM from site.sh)
+  --step <step>            all (default) | spack | env | concretize | install
   --force                  delete and recreate the environment if it already exists
 ```
 
 The environment is named after `environment-name.txt`, for example
 `gyselalibxx-h100-v2026-11-12-0`. The steps run in this order:
 
-| Step | What it does | Where (Slurm mode) |
-|---|---|---|
-| `spack` | clone Spack (`spack-version.txt`) into the platform's prefix, `spack bootstrap now` | login node |
-| `env` | (re)create the environment, copy in the project and platform files, `spack repo update`, detect system packages if the platform asks for it | login node |
-| `concretize` | concretize, print the specs and the `spack.lock` checksum | compute node |
-| `mirror` | download every source into `<prefix>/var/spack/mirror` and use it as a mirror | login node |
-| `crates` | download the Rust crates the packages need (see below) | login node |
-| `install` | build and install | compute node |
-
-Without Slurm mode (`local`, and clusters whose builds can run where
-`install.sh` runs) the `mirror` and `crates` steps are skipped and everything
-runs in place.
+| Step | What it does |
+|---|---|
+| `spack` | clone Spack (`spack-version.txt`) into the platform's prefix, `spack bootstrap now` |
+| `env` | (re)create the environment, copy in the project and platform files, `spack repo update`, detect system packages if the platform asks for it |
+| `concretize` | concretize, print the specs and the `spack.lock` checksum |
+| `install` | build and install |
 
 - **One step at a time:** `--step <step>` runs only that step. This is how to
-  resume after a failure, or after a compute-node job reached its time limit:
+  resume after a failure, or after a job reached its time limit:
   `--step install` again continues where Spack stopped.
 - **No accidental reinstall:** the `env` step (part of a full run) stops if the
   environment of the current version already exists. Pass `--force` to delete
@@ -181,41 +171,13 @@ Other options are still given on the command line, for example
 
 Most of the scripts' logic exists to work around one of these limitations.
 
-**1. Compute nodes without internet.** On some clusters (Jean Zay), GPU nodes
-cannot reach the internet, but builds must run there rather than on the login
-nodes, whose resources are limited. In Slurm mode `install.sh` therefore runs
-`concretize` and `install` on a compute node through `srun`. Every download
-happens on the login node beforehand: the sources go into a local Spack mirror,
-which the build on the compute node then uses.
-
-**2. Rust crates are not mirrored by Spack.** Packages built with Rust
-(`py-maturin`, `py-rpds-py`, `py-libcst`, …) let `cargo` download their
-dependencies (crates) during the build. The Spack mirror does not contain them,
-so the build fails without internet. The `crates` step (`vendor-crates.sh`)
-fixes this:
-
-- on the login node, it downloads the official standalone `cargo` of the same
-  version as the environment's `rust` (checksum verified), stages each Rust
-  package from the mirror and runs `cargo vendor` into
-  `<prefix>/var/spack/cargo-vendor`;
-- on the compute node, before building, `install.sh` writes
-  `<stage root>/.cargo/config.toml`, telling cargo to take the crates from that
-  directory. Cargo reads this file from every parent of its build directory, and
-  Spack builds every package below its stage root. Environment variables cannot
-  do this, because cargo ignores them for source replacement.
-
-An environment without `rust` skips the step and downloads nothing.
-`CARGO=/path/to/cargo` uses another cargo, and `RUST_DIST_SERVER` a mirror of
-`https://static.rust-lang.org`. Crates coming from git repositories are not
-handled.
-
-**3. Git versions need the network to concretize.** A spec such as
+**1. Git versions are looked up while concretizing.** A spec such as
 `foo@git.<commit>` makes Spack clone the repository during concretization, to
-work out which version that commit is, and that fails on a compute node. Always
-give the version: `foo@git.<commit>=<version>`, where `<version>` exists in the
+work out which version that commit is. Give the version instead, so that Spack
+does not need to: `foo@git.<commit>=<version>`, where `<version>` exists in the
 package recipe (for example `py-gysmc@git.f62d…=main`).
 
-**4. `specs:` cannot be included.** Spack includes can carry configuration
+**2. `specs:` cannot be included.** Spack includes can carry configuration
 (`packages`, `repos`, …) but not the spec list of an environment. Each project
 therefore keeps its full `spack.yaml`, and the platform files are attached to
 it: `install.sh` copies `platforms/<site>/<arch>/spack/` into
@@ -223,14 +185,14 @@ it: `install.sh` copies `platforms/<site>/<arch>/spack/` into
 included by its own name, because a directory include only reads the files
 named after a configuration section (`packages.yaml`, `repos.yaml`, …).
 
-**5. Shared installs without `newgrp`/`sg`.** Spack's `permissions:` settings
+**3. Shared installs without `newgrp`/`sg`.** Spack's `permissions:` settings
 cover the installed packages, but not its other directories (environments,
 repository checkouts, caches). New files also get your primary group rather than
 the project's. Since `newgrp` and `sg` are not available, `install.sh` ends by
 setting the platform's group (`GYSELA_SPACK_GROUP`) and the group bits on what
 you own under the prefix.
 
-**6. Configuration leaking from the user's account.** Every `site.sh` sets
+**4. Configuration leaking from the user's account.** Every `site.sh` sets
 `SPACK_DISABLE_LOCAL_CONFIG=true`, so that `~/.spack` cannot change a build, and
 purges the loaded modules. Where `/tmp` is too small for builds (Jean Zay),
 `site.sh` points `TMPDIR`, and thus Spack's build stages, to the job's scratch
@@ -240,7 +202,7 @@ space. Python's bytecode cache goes to a private per-user directory,
 is private because Python runs a cached `.pyc` that matches its source's size and
 date: whoever can write the cache can run code in your Python processes.
 
-**7. Run-time library paths.** Spack does not add packages to
+**5. Run-time library paths.** Spack does not add packages to
 `LD_LIBRARY_PATH` when activating an environment, so `activate.sh` does it for
 Kokkos Tools, whose libraries are loaded at run time.
 
@@ -257,22 +219,18 @@ step 2). It is sourced by `install.sh` and `activate.sh`, and must export:
 | `GYSELA_SPACK_PREFIX` | where Spack is cloned and everything is installed: `<base>/gysela-spack/${GYSELA_SPACK_VERSION}`, with `<base>` typically a project scratch or work space |
 | `GYSELA_SPACK_VERSION` | read it from `spack-version.txt`, as the existing `site.sh` files do |
 | `GYSELA_SPACK_GROUP` | Unix group the install is shared with |
-| `GYSELA_SPACK_JOBS` | build parallelism outside Slurm |
+| `GYSELA_SPACK_JOBS` | build parallelism |
 | `SPACK_DISABLE_LOCAL_CONFIG` | `true` |
 
 and optionally:
 
 | Variable | Meaning |
 |---|---|
-| `GYSELA_USE_SLURM=1` | Slurm mode: concretize and install on compute nodes |
-| `GYSELA_SLURM_QOS`, `GYSELA_SLURM_TIME` | QoS and time limit of those jobs |
-| `GYSELA_SLURM_CPUS_PER_GPU` | CPUs requested per GPU |
-| `GYSELA_SLURM_GPUS_CONCRETIZE`, `GYSELA_SLURM_GPUS_INSTALL` | GPUs requested by the two jobs |
 | `GYSELA_DETECT_EXTERNALS` | packages to detect with `spack external find` instead of describing them in `externals.yaml` (`local` uses `gcc`) |
 
 Start from the closest existing `site.sh`. Keep the check that refuses to run it
 directly, and guard `module purge` with `command -v module`: `module` may not
-exist under `srun`.
+exist in non-interactive shells.
 
 **2. Create `platforms/<site>/<arch>/spack/`** with:
 
@@ -291,9 +249,7 @@ exist under `srun`.
   architecture with the closest compiler (GCC, `hipcc` or `nvcc_wrapper`).
 
 An architecture is recognised by its `spack/packages.yaml`; `install.sh` lists
-the available ones. In Slurm mode, the directory name is also passed to `srun`
-as `--constraint`, so it must be a valid Slurm constraint of the site (for
-example `h100`).
+the available ones.
 
 **3. Try it:** `./install.sh --platform <site> --arch <arch> --project gyselalibxx --step concretize`
 shows whether the externals and preferences give a sensible concretization,
@@ -339,9 +295,7 @@ backend, MPI, targets) belong to the platforms' `packages.yaml`. Project-wide
 preferences can go in the project's own `packages:` section, which takes
 precedence over the platform files.
 
-**4. Follow the rules above for air-gapped builds:** give git versions their
-`=<version>` suffix, and remember that packages built with Rust only work there
-through the `crates` step.
+**4. Give git versions their `=<version>` suffix** (see the workarounds above).
 
 The project is then available to `install.sh` and `activate.sh` under its
 directory name.

@@ -15,11 +15,7 @@
 #   spack        clone Spack and bootstrap it                 (needs internet)
 #   env          (re)create the environment, update repos, detect system packages (needs internet)
 #   concretize   concretize the environment
-#   mirror       download all sources to a local mirror       (Slurm mode only)
-#   crates       download the Rust crates for offline builds  (Slurm mode only)
-#   install      build and install
-# In Slurm mode (GYSELA_USE_SLURM=1 in site.sh, or --slurm), `concretize` and
-# `install` run on a compute node through srun, the others on the login node.
+#   install      build and install                            (needs internet)
 
 # Ensures the script is not being sourced
 if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
@@ -54,9 +50,7 @@ Options:
   --platform <site>        one of: $(list_dirs "${TOOLCHAIN_ROOT}/platforms" site.sh)
   --arch <arch>            a sub-directory of platforms/<site>/ (e.g. mi250, h100)
   --project <project>      one of: $(list_dirs "${TOOLCHAIN_ROOT}/projects" spack.yaml)
-  --step <step>            all (default) | spack | env | concretize | mirror | crates | install
-  --slurm-account <acct>   Slurm account (or set GYSELA_SLURM_ACCOUNT)
-  --slurm / --no-slurm     force or disable Slurm mode (default: GYSELA_USE_SLURM from site.sh)
+  --step <step>            all (default) | spack | env | concretize | install
   --force                  delete and recreate the environment if it already exists
   -h, --help               show this help
 EOF
@@ -64,8 +58,6 @@ EOF
 
 # ---------------------------------------------------------------- arguments
 platform="" arch="" project="" step="all"
-slurm_account="${GYSELA_SLURM_ACCOUNT:-}"
-slurm_override=""
 force=0
 
 while [[ $# -gt 0 ]]; do
@@ -74,9 +66,6 @@ while [[ $# -gt 0 ]]; do
         --arch)          arch="${2:?--arch needs a value}"; shift 2 ;;
         --project)       project="${2:?--project needs a value}"; shift 2 ;;
         --step)          step="${2:?--step needs a value}"; shift 2 ;;
-        --slurm-account) slurm_account="${2:?--slurm-account needs a value}"; shift 2 ;;
-        --slurm)         slurm_override=1; shift ;;
-        --no-slurm)      slurm_override=0; shift ;;
         --force)         force=1; shift ;;
         -h|--help)       usage; exit 0 ;;
         *)               usage >&2; die "unknown argument: $1" ;;
@@ -86,7 +75,7 @@ done
 [[ -n "${platform}" && -n "${arch}" && -n "${project}" ]] \
     || { usage >&2; die "--platform, --arch and --project are required"; }
 case "${step}" in
-    all|spack|env|concretize|mirror|crates|install) ;;
+    all|spack|env|concretize|install) ;;
     *) die "invalid --step '${step}'" ;;
 esac
 
@@ -124,20 +113,6 @@ env_name="$(tr -d '[:space:]' < "${TOOLCHAIN_ROOT}/environment-name.txt")"
 env_name="${env_name//\{project\}/${project}}"
 env_name="${env_name//\{arch\}/${arch}}"
 env_name="${env_name//\{version\}/${version}}"
-
-use_slurm="${slurm_override:-${GYSELA_USE_SLURM:-0}}"
-if [[ "${use_slurm}" == 1 && -z "${GYSELA_INSTALL_WORKER:-}" ]]; then
-    [[ -n "${slurm_account}" ]] || die "Slurm mode needs --slurm-account (or GYSELA_SLURM_ACCOUNT)"
-    command -v srun >/dev/null 2>&1 || die "srun not found"
-    : "${GYSELA_SLURM_CPUS_PER_GPU:?not set by ${platform}/site.sh}"
-    : "${GYSELA_SLURM_QOS:?not set by ${platform}/site.sh}"
-    : "${GYSELA_SLURM_TIME:?not set by ${platform}/site.sh}"
-    : "${GYSELA_SLURM_GPUS_CONCRETIZE:?not set by ${platform}/site.sh}"
-    : "${GYSELA_SLURM_GPUS_INSTALL:?not set by ${platform}/site.sh}"
-fi
-
-mirror_dir="${GYSELA_SPACK_PREFIX}/var/spack/mirror"
-cargo_vendor_dir="${GYSELA_SPACK_PREFIX}/var/spack/cargo-vendor"
 
 # ------------------------------------------------------------------- steps
 load_spack() {
@@ -208,45 +183,9 @@ step_concretize() {
     sha256sum "${lock}"
 }
 
-step_mirror() {
-    load_spack
-    info "Mirroring sources into ${mirror_dir}"
-    spack -e "${env_name}" mirror create --all --directory "${mirror_dir}"
-    spack -e "${env_name}" mirror remove local_filesystem >/dev/null 2>&1 || true
-    spack -e "${env_name}" mirror add local_filesystem "${mirror_dir}"
-}
-
-step_crates() {
-    load_spack
-    info "Downloading Rust crates into ${cargo_vendor_dir}"
-    "${TOOLCHAIN_ROOT}/vendor-crates.sh" "${env_name}" "${cargo_vendor_dir}"
-}
-
-# Make cargo use the crates of the `crates` step instead of crates.io.
-# Cargo reads .cargo/config.toml from every parent of its build directory,
-# and Spack builds each package below its stage root (which it leaves alone).
-use_vendored_crates() {
-    local stage_root
-    stage_root="$(spack -e "${env_name}" location --stages)"
-    info "Using the Rust crates of ${cargo_vendor_dir} (${stage_root}/.cargo/config.toml)"
-    mkdir --parents "${stage_root}/.cargo"
-    cat > "${stage_root}/.cargo/config.toml" <<EOF
-# Written by install.sh: use the crates downloaded on the login node
-[source.crates-io]
-replace-with = "vendored-sources"
-
-[source.vendored-sources]
-directory = "${cargo_vendor_dir}"
-EOF
-}
-
 step_install() {
     load_spack
-    # On an air-gapped compute node, build Rust packages from the downloaded crates
-    if [[ -n "${GYSELA_INSTALL_WORKER:-}" && -n "$(ls -A "${cargo_vendor_dir}" 2>/dev/null)" ]]; then
-        use_vendored_crates
-    fi
-    spack -e "${env_name}" install --jobs "${SLURM_CPUS_PER_TASK:-${GYSELA_SPACK_JOBS}}"
+    spack -e "${env_name}" install --jobs "${GYSELA_SPACK_JOBS}"
 }
 
 fix_permissions() {
@@ -257,55 +196,17 @@ fix_permissions() {
         -exec chmod g+rwX {} + || warn "could not fix all permissions"
 }
 
-# Run a step on a compute node (Slurm mode) or directly
-run_on_compute_node() {
-    local name="$1" gpus="$2"
-    local cpus=$(( gpus * GYSELA_SLURM_CPUS_PER_GPU ))
-    info "srun: ${name} (${gpus} GPU(s), ${cpus} CPUs)"
-    GYSELA_INSTALL_WORKER=1 srun \
-        --account="${slurm_account}" \
-        --constraint="${arch}" \
-        --ntasks=1 \
-        --gres="gpu:${gpus}" \
-        --cpus-per-task="${cpus}" \
-        --time="${GYSELA_SLURM_TIME}" \
-        --qos="${GYSELA_SLURM_QOS}" \
-        bash "${SELF}" --platform "${platform}" --arch "${arch}" --project "${project}" --step "${name}"
-}
-
-run_step() {
-    local name="$1"
-    if [[ -n "${GYSELA_INSTALL_WORKER:-}" || "${use_slurm}" != 1 ]]; then
-        "step_${name}"
-        return
-    fi
-    case "${name}" in
-        concretize) run_on_compute_node concretize "${GYSELA_SLURM_GPUS_CONCRETIZE}" ;;
-        install)    run_on_compute_node install "${GYSELA_SLURM_GPUS_INSTALL}" ;;
-        *)          "step_${name}" ;;
-    esac
-}
-
 # -------------------------------------------------------------------- main
-if [[ -n "${GYSELA_INSTALL_WORKER:-}" ]]; then
-    # Running inside srun: execute exactly one step, no permission handling.
-    [[ "${step}" != all ]] || die "internal error: worker needs an explicit step"
-    run_step "${step}"
-    exit 0
-fi
-
 trap 'trap - EXIT; fix_permissions' EXIT
 trap 'echo "error: failed (environment ${env_name}, line ${LINENO})" >&2' ERR
 
 if [[ "${step}" == all ]]; then
-    steps=(spack env concretize)
-    [[ "${use_slurm}" == 1 ]] && steps+=(mirror crates)
-    steps+=(install)
+    steps=(spack env concretize install)
 else
     steps=("${step}")
 fi
 for s in "${steps[@]}"; do
-    run_step "${s}"
+    "step_${s}"
 done
 info "Done: ${env_name}"
 info "Activate it with: . ${TOOLCHAIN_ROOT}/activate.sh --platform ${platform} --arch ${arch} --project ${project}"
