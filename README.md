@@ -175,6 +175,41 @@ ctest --preset release
 Other options are still given on the command line, for example
 `cmake --preset debug -DGYSELALIBXX_POISSON_2D_BUILD_TESTING=OFF`.
 
+## Docker images
+
+The workflow `.github/workflows/docker-images.yaml` builds an image per project
+and generic architecture (`gyselalibxx` and `gysela_xpp`, on `serial` and
+`openmp`), straight from `projects/<project>/spack.yaml` and
+`platforms/generic/<arch>/spack/`: `install.sh` and the environment names are
+not used. The images are pushed to the GitHub registry on every push to `main`:
+
+```
+ghcr.io/gyselax/<project>:<arch>               latest build of main
+ghcr.io/gyselax/<project>:<version>-<arch>     version.txt
+```
+
+Every command runs inside the environment:
+
+```bash
+docker run --rm -v "$PWD":/src -w /src ghcr.io/gyselax/gyselalibxx:openmp \
+    bash -c "cmake -B build -G Ninja && cmake --build build"
+```
+
+- **Build cache:** the packages are taken from the Spack build cache
+  `oci://ghcr.io/gyselax/spack-buildcache` when they are already built, and every
+  package built is pushed to it as soon as it is installed, so the images share
+  their common packages, build dependencies included, and a build that fails or
+  reaches the time limit of the job resumes from where it stopped. Pull
+  requests read the cache and push nothing.
+- **User:** commands run as the user `gysela` (UID 1000), not as root, as Open
+  MPI requires. With another UID, pass `--user "$(id -u):$(id -g)"` to `docker run`
+  so that the files written in a mounted directory belong to you.
+- **Locally:** `docker build -f docker/Dockerfile --build-arg PROJECT=gyselalibxx
+  --build-arg ARCH=openmp --build-arg SPACK_VERSION="$(cat spack-version.txt)" .`,
+  with `--build-arg BUILDCACHE=oci://ghcr.io/gyselax/spack-buildcache` to use the cache.
+- **Another image:** add the project or the architecture to the `matrix` of the
+  workflow, and to its `paths`.
+
 ## Workarounds for Spack limitations
 
 Most of the scripts' logic exists to work around one of these limitations.

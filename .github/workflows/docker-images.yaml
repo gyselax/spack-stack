@@ -1,0 +1,120 @@
+---
+name: Docker images
+
+# Build an image per project and generic architecture, from projects/ and
+# platforms/generic/. Packages come from, and go to, a Spack build cache on the
+# GitHub registry, so that a package is only built once for all the images.
+#
+#   ghcr.io/<owner>/<project>:<arch>               latest build of main
+#   ghcr.io/<owner>/<project>:<version>-<arch>     version.txt
+#   ghcr.io/<owner>/spack-buildcache               the Spack build cache
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/docker-images.yaml'
+      - '.dockerignore'
+      - 'docker/**'
+      - 'platforms/generic/**'
+      - 'projects/gysela_xpp/**'
+      - 'projects/gyselalibxx/**'
+      - 'spack-version.txt'
+      - 'version.txt'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/docker-images.yaml'
+      - '.dockerignore'
+      - 'docker/**'
+      - 'platforms/generic/**'
+      - 'projects/gysela_xpp/**'
+      - 'projects/gyselalibxx/**'
+      - 'spack-version.txt'
+      - 'version.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  image:
+    name: ${{ matrix.project }} (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [gyselalibxx, gysela_xpp]
+        arch: [serial, openmp]
+    env:
+      # Pull requests (forks included) read the build cache and push nothing
+      PUSH: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Settings
+        id: settings
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          {
+            echo "image=ghcr.io/${owner}/${{ matrix.project }}"
+            echo "buildcache=oci://ghcr.io/${owner}/spack-buildcache"
+            echo "spack-version=$(tr -d '[:space:]' < spack-version.txt)"
+            echo "version=$(tr -d '[:space:]' < version.txt)"
+          } >> "${GITHUB_OUTPUT}"
+
+      # A full build needs more disk than the runner leaves free
+      - uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6  # v2.0.0
+        with:
+          tool-cache: true
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069  # v4.4.1
+
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550  # v4.8.0
+        if: env.PUSH == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302  # v6.2.0
+        id: meta
+        with:
+          images: ${{ steps.settings.outputs.image }}
+          flavor: latest=false
+          tags: |
+            type=raw,value=${{ steps.settings.outputs.version }}-${{ matrix.arch }},enable={{is_default_branch}}
+            type=raw,value=${{ matrix.arch }},enable={{is_default_branch}}
+            type=ref,event=pr,suffix=-${{ matrix.arch }}
+            type=ref,event=branch,suffix=-${{ matrix.arch }},enable=${{ github.ref_name != github.event.repository.default_branch }}
+          labels: |
+            org.opencontainers.image.title=${{ matrix.project }} (${{ matrix.arch }})
+            org.opencontainers.image.version=${{ steps.settings.outputs.version }}-${{ matrix.arch }}
+
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
+        with:
+          context: .
+          file: docker/Dockerfile
+          build-args: |
+            PROJECT=${{ matrix.project }}
+            ARCH=${{ matrix.arch }}
+            SPACK_VERSION=${{ steps.settings.outputs.spack-version }}
+            BUILDCACHE=${{ steps.settings.outputs.buildcache }}
+            PUSH_BUILDCACHE=${{ env.PUSH }}
+            REGISTRY_USER=${{ github.actor }}
+          secrets: |
+            registry_token=${{ secrets.GITHUB_TOKEN }}
+          push: ${{ env.PUSH == 'true' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
