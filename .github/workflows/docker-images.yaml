@@ -58,8 +58,10 @@ jobs:
           - gyselalibxx
           - gysela_xpp
         arch:
-          - serial
-          - openmp
+          - gcc-serial
+          - gcc-openmp
+          - clang-serial
+          - clang-openmp
     env:
       # Pull requests (forks included) read the build cache and push nothing
       PUSH: ${{ github.event_name != 'pull_request' }}
