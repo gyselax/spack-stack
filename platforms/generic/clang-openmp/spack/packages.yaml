@@ -1,0 +1,28 @@
+---
+packages:
+  all:
+    prefer:
+      - '~cuda'
+      - '~rocm'
+      - '+openmp'
+      - '~mpi'
+      - '~fortran'
+    require:
+      - one_of:
+          - 'target=x86_64'
+          - 'target=aarch64'
+  c:
+    prefer:
+      - 'llvm'
+  cxx:
+    prefer:
+      - 'llvm'
+  fortran:
+    prefer:
+      - 'gcc'
+  lapack:
+    require:
+      - 'openblas'
+  mpi:
+    require:
+      - 'openmpi'

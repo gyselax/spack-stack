@@ -11,6 +11,15 @@ packages:
       - one_of:
           - 'target=x86_64'
           - 'target=aarch64'
+  c:
+    prefer:
+      - 'gcc'
+  cxx:
+    prefer:
+      - 'gcc'
+  fortran:
+    prefer:
+      - 'gcc'
   lapack:
     require:
       - 'openblas'

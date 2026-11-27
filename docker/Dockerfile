@@ -3,7 +3,7 @@
 # Image of a project's Spack environment on a generic platform:
 #
 #   docker build -f docker/Dockerfile \
-#       --build-arg PROJECT=gyselalibxx --build-arg ARCH=openmp \
+#       --build-arg PROJECT=gyselalibxx --build-arg ARCH=gcc-openmp \
 #       --build-arg SPACK_VERSION="$(cat spack-version.txt)" .
 #
 # The environment is made of
@@ -16,6 +16,8 @@
 # token comes from the BuildKit secret `registry_token`, it is not stored in the image.
 
 ARG BASE_IMAGE=ubuntu:24.04
+# Clang of the clang-* architectures, from apt.llvm.org
+ARG LLVM_VERSION=23
 
 # ======================================================================= build
 FROM ${BASE_IMAGE} AS builder
@@ -26,15 +28,16 @@ ARG SPACK_VERSION
 ARG BUILDCACHE=""
 ARG PUSH_BUILDCACHE=false
 ARG REGISTRY_USER=""
+ARG LLVM_VERSION
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Compilers (gfortran: e.g. py-scipy needs one) and what Spack needs to fetch and build
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+# Compilers (gfortran: e.g. py-scipy needs one, also with clang-*) and what
+# Spack needs to fetch and build
+COPY docker/install-packages.sh /opt/install-packages.sh
+RUN /opt/install-packages.sh "${ARCH:?}" \
       bzip2 ca-certificates curl file g++ gfortran git gzip make patch \
-      python3 tar unzip xz-utils zstd \
- && rm -rf /var/lib/apt/lists/*
+      python3 tar unzip xz-utils zstd
 
 RUN : "${PROJECT:?}" "${ARCH:?}" "${SPACK_VERSION:?}" \
  && git clone --depth 1 --branch "v${SPACK_VERSION}" https://github.com/spack/spack.git /opt/spack
@@ -56,12 +59,12 @@ FROM ${BASE_IMAGE}
 
 ARG PROJECT
 ARG ARCH
+ARG LLVM_VERSION
 
 # The compilers of the build: Spack detected them as externals, and users compile here
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      ca-certificates g++ gfortran git make \
- && rm -rf /var/lib/apt/lists/*
+COPY docker/install-packages.sh /opt/install-packages.sh
+RUN /opt/install-packages.sh "${ARCH}" ca-certificates g++ gfortran git make \
+ && rm /opt/install-packages.sh
 
 COPY --from=builder /opt/spack /opt/spack
 COPY --from=builder /opt/software /opt/software
