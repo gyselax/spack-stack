@@ -35,7 +35,7 @@ if [[ -n "${BUILDCACHE}" ]]; then
 fi
 
 status=0
-spack install --use-buildcache auto --jobs "$(nproc)" || status=$?
+spack install --use-buildcache auto --fail-fast --show-log-on-error --jobs "$(nproc)" || status=$?
 
 if [[ -n "${BUILDCACHE}" ]]; then
     if [[ "${PUSH_BUILDCACHE}" == true ]]; then
